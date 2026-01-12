@@ -4,6 +4,8 @@ from flask import Flask
 ##importamos el dotenv para tomar las variables de entorno
 from dotenv import load_dotenv
 
+
+
 ##importamos el modulo para crear la api-rest
 from flask_restful import  Api
 ##definimos lo importado
@@ -16,5 +18,8 @@ def create_app():
     load_dotenv()
     #definimos la ruta
     import main.resources as resources
-    api.add_resource(resources.ClienteResource)
+    ##agregamos la url que va tener para ser obtenido
+    api.add_resource(resources.ClientesResource,'/Clientes')
+    api.add_resource(resources.ClienteResource,'/Cliente/<id>')
+    api.init_app(app)
     return app
