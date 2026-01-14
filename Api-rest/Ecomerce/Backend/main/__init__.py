@@ -30,6 +30,7 @@ def create_app():
         os.makedirs(PATH, exist_ok=True)
         connect_db =sqlite3.connect(os.path.join(PATH,DB_NAME))
         
+    
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=False
     app.config["SQLALCHEMY_DATABASE_URI"]=f"sqlite:///{os.path.join(PATH,DB_NAME)}"
     db.init_app(app)
@@ -39,5 +40,10 @@ def create_app():
     ##agregamos la url que va tener para ser obtenido
     api.add_resource(resources.ClientesResource,'/Clientes')
     api.add_resource(resources.ClienteResource,'/Cliente/<id>')
+    api.add_resource(resources.UsuariosResource,'/Usuarios')
+    api.add_resource(resources.UsuarioResource,'/Usuario/<id>') 
+    
+    
     api.init_app(app)
+    
     return app
