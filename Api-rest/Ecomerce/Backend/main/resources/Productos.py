@@ -8,4 +8,9 @@ class Producto(Resource):
     pass
 
 class Productos(Resource):
-    pass 
+    
+    def post(self):
+        producto = ProductoModel.from_json(request.get_json())
+        db.session.add(producto)
+        db.session.commit()
+        return producto.to_json(),201
