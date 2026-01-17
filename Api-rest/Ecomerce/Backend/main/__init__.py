@@ -38,11 +38,16 @@ def create_app():
     #definimos la ruta
     import main.resources as resources
     ##agregamos la url que va tener para ser obtenido
-    api.add_resource(resources.ClientesResource,'/Clientes')
-    api.add_resource(resources.ClienteResource,'/Cliente/<id>')
-    api.add_resource(resources.UsuariosResource,'/Usuarios')
-    api.add_resource(resources.UsuarioResource,'/Usuario/<id>') 
-    
+    api.add_resource(resources.ClientesResource,'/clientes')
+    api.add_resource(resources.ClienteResource,'/cliente/<id>')
+    api.add_resource(resources.UsuariosResource,'/usuarios')
+    api.add_resource(resources.UsuarioResource,'/usuario/<id>') 
+    api.add_resource(resources.ProductoResource,'/producto/<id>')
+    api.add_resource(resources.ProductosResource,'/productos')
+    api.add_resource(resources.ComprasResource,'/compras')
+    api.add_resource(resources.CompraResource,'/compra/<id>')
+    api.add_resource(resources.ProductosComprasResource,'/productos/compras')
+    api.add_resource(resources.ProductoCompraResource,'/producto/compra/<id>')
     
     api.init_app(app)
     

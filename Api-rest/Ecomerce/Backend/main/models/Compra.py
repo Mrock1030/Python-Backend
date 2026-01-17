@@ -2,12 +2,13 @@ from .. import db
 import datetime as dt
 
 
-class Compra(db.Modelk):
+class Compra(db.Model):
     
-    id = db.Column(db.Integer,primary_key=True),
-    fecha_compra = db.Column(db.DateTime, default=dt.datetime.now(),nullable=False),
+    id = db.Column(db.Integer,primary_key=True)
+    fecha_compra = db.Column(db.DateTime, default=dt.datetime.now(),nullable=False)
     usuarioId = db.Column(db.Integer,db.ForeignKey('usuario.id'),nullable=False)
     usuario = db.relationship('Usuario',back_populates="compras",uselist=False, single_parent =True)
+    productoscompras=db.relationship("ProductoCompra",back_populates="compra",cascade="all,delete-orphan")
     
     def __repr___(self):
         return f'{self.id},{self.fecha_compra},{self.usuarioId}'

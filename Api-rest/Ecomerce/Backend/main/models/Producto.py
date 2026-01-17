@@ -4,12 +4,12 @@ import datetime as dt
 
 class Producto(db.Model):
 
-     id = db.Colum(db.Integer, primary_key=True),
-     nombre= db.Column(db.String(100),nullable=False),
-     precio = db.Column(db.Integer,nullable=False),
-     imagen = db.Column(db.String(200),nullable=False),
-     descripcion = db.Column(db.String(200),nullable=False),
-     
+     id = db.Column(db.Integer, primary_key=True)
+     nombre= db.Column(db.String(100),nullable=False)
+     precio = db.Column(db.Integer,nullable=False)
+     imagen = db.Column(db.String(200),nullable=False)
+     descripcion = db.Column(db.String(200),nullable=False)
+     productoscompras=db.relationship("ProductoCompra",back_populates="producto",cascade="all,delete-orphan")
      stock = db.Column(db.Integer,nullable=False)
      
 def __repr___(self):
