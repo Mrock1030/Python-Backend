@@ -1,10 +1,12 @@
 from .. import db
 
 
-class ProdutoCompra(db.Model):
+class ProductoCompra(db.Model):
+    
     productoId=db.Column(db.Integer, db.ForeignKey('producto.id'),primary_key=True, nullable=False)
     producto= db.relationship('Producto',back_populates="productoscompras", uselist=False, single_parent=True)
     compraId= db.Column(db.Integer,db.ForeignKey("compra.id"),nullable=False)
+    compra = db.relationship('Compra',back_populates="productoscompras", uselist=False, single_parent=True)
     
     def __repr__(self):
         return f"Producto-Compras:{self.producto.to_json()}"
@@ -24,7 +26,6 @@ class ProdutoCompra(db.Model):
         compraId = productocompra_json.get("compraId")
         
         return ProdutoCompra (
-            id=id,
             productoId=productoId,
             compraId=compraId)
         

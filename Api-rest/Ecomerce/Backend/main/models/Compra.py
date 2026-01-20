@@ -32,7 +32,6 @@ class Compra(db.Model):
     
                 
         return Compra(
-        id=id,
         fecha_compra=fecha_compra,
         usuarioId=usuarioId,)
     

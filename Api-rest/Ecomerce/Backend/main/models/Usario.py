@@ -11,7 +11,7 @@ class Usuario(db.Model):
     rol=db.Column(db.String(45),nullable=False,default="cliente")
     telefono= db.Column(db.Integer,nullable=False)
     fecha_registro = db.Column(db.DateTime,default=dt.datetime.now(), nullable=False)
-    compras = db.relationship('compra',back_populates="usuario", cascade="all,delete-orphan")
+    compras = db.relationship('Compra',back_populates="usuario", cascade="all,delete-orphan")
     
     ##añadimos esta función para debuguiar
     def __repr___(self):
@@ -44,7 +44,6 @@ class Usuario(db.Model):
         
         #instanciamos esto como un objeto
         return Usuario(
-            id= id,
             nombre= nombre,
             apellido=apellido,
             email=email,
