@@ -19,16 +19,16 @@ class Compra(db.Model):
             #creamos el diccionario donde vamos a mostrar las variables
             compra_json ={
                 "id":self.id,
-                "Fecha_Compra":str(self.fecha_compra),
-                "Usuario":self.usuario.to_json(),
+                "fecha_Compra":str(self.fecha_compra),
+                "usuario":self.usuario.to_json(),
             }
             return compra_json
         
     @staticmethod   
     def from_json(compra_json):
-        id = compra_json.get("id"),
-        fecha_compra= compra_json.get("Fecha_Compra"), 
-        usuarioId=compra_json.get("usuarioId"),
+        id = compra_json.get("id")
+        fecha_compra= compra_json.get("fecha_Compra")
+        usuarioId=compra_json.get("usuarioId")
     
                 
         return Compra(

@@ -38,10 +38,11 @@ def create_app():
     #definimos la ruta
     import main.resources as resources
     ##agregamos la url que va tener para ser obtenido
-    api.add_resource(resources.ClientesResource,'/clientes')
-    api.add_resource(resources.ClienteResource,'/cliente/<id>')
+# ¡ESPECIFICO ENDPOINTS ÚNICOS PARA CADA RUTA!
+    api.add_resource(resources.ClientesResource, '/clientes')
+    api.add_resource(resources.ClienteResource,'/cliente/<int:id>')
     api.add_resource(resources.UsuariosResource,'/usuarios')
-    api.add_resource(resources.UsuarioResource,'/usuario/<id>') 
+    api.add_resource(resources.UsuarioResource,'/usuario/<int:id>')
     api.add_resource(resources.ProductoResource,'/producto/<id>')
     api.add_resource(resources.ProductosResource,'/productos')
     api.add_resource(resources.ComprasResource,'/compras')
