@@ -14,7 +14,28 @@ class Cliente(Resource):
             return cliente.to_json()
         else:
             return '',404
-  
+        
+    def put (self, id):
+        cliente = db.session.query(UsuarioModel).get_or_404(id)
+        data = request.get_json().items()
+        for i, value in data:
+            setattr(cliente, i, value)
+        try:
+            db.session.add(cliente)
+            db.session.commit()
+            return cliente.to_json(),201
+        except:
+            return '' ,404
+        
+    def delete(self,id):
+        cliente = db.session.query(UsuarioModel).get_or_404(id)
+        try:
+            db.session.delete(cliente)
+            db.session.commit()
+            return 'Se elimino el cliente', 201
+        except :
+            return 'No existe el cliente a elminar', 404
+        
 
 class Clientes(Resource):
     
