@@ -12,12 +12,26 @@ class Usuario(Resource):
         else:
             return '',404
         
-  
-
 class Usuarios(Resource):
     
-     def get(self):
-        usuarios= db.session.query(UsuarioModel).all()
+    def get(self):
+        page =1
+        per_page
+        usuarios= db.session.query(UsuarioModel)
+        if request.get_json(silent=True):
+            filters = request.get_json().items()
+            for key, value in filters:
+                if key =='page':
+                    page=int(value)
+                elif key =='per_page':
+                    per_page==int(value)
+        usuarios=usuarios.paginate(page,per_page,True,10)
+            
         return jsonify({
-            'usuario':[usuario.to_json() for compra in usuarios]
+            'total':usuarios.total,
+            'pages':usuarios.pages,
+            'usuario':[usuario.to_json() for compra in usuarios.items],
+            'page':page
         })
+        
+        
