@@ -1,5 +1,8 @@
 from .. import db
 import datetime as dt
+#importamos la libreria de seguridad
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 
 class Usuario(db.Model):
@@ -10,8 +13,24 @@ class Usuario(db.Model):
     email=db.Column(db.String(80),nullable=False,unique=True,index=True)
     rol=db.Column(db.String(45),nullable=False,default="cliente")
     telefono= db.Column(db.Integer,nullable=False)
+    password = db.Column(db.String(100), nullable=False)
     fecha_registro = db.Column(db.DateTime,default=dt.datetime.now(), nullable=False)
     compras = db.relationship("Compra",back_populates="usuario", cascade="all,delete-orphan")
+    
+    @property
+    #funcion de encapsulamiento
+    def plain_password(self):
+        raise AttributeError('Password cant be read')
+    
+    @plain_password.setter
+    def plain_password(self,password):
+        #Le ingresamos la contraseña
+        self.password = generate_password_hash(password)
+        
+    #validar la contraseña
+    def validate_pass(self,password):
+        return check_password_hash(self.password,password)
+        
     
     ##añadimos esta función para debuguiar
     def __repr___(self):
@@ -41,6 +60,7 @@ class Usuario(db.Model):
         email=usuario_json.get("email")
         rol=usuario_json.get("rol")
         telefono=usuario_json.get("telefono")
+        password =usuario_json.get('password')
         fecha_registro= usuario_json.get("fecha")
         
         #instanciamos esto como un objeto
@@ -49,6 +69,7 @@ class Usuario(db.Model):
             apellido=apellido,
             email=email,
             telefono=telefono,
+            plain_password = password,
             fecha_registro=fecha_registro
             
         )
