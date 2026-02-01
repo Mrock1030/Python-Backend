@@ -16,7 +16,7 @@ class Usuarios(Resource):
     
     def get(self):
         page =1
-        per_page
+        per_page=5
         usuarios= db.session.query(UsuarioModel)
         if request.get_json(silent=True):
             filters = request.get_json().items()
