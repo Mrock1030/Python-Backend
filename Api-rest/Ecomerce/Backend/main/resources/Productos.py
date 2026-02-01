@@ -15,8 +15,8 @@ class Producto(Resource):
     def put (self,id):
         producto = db.session.query(ProductoModel).get_or_404(id)
         data = request.get_json().items()
-        for key, value in data:
-            setattr(producto,key,value)
+        for i, value in data:
+            setattr(producto,i,value)
             
         try:
             db.session.add(producto)
@@ -37,10 +37,22 @@ class Producto(Resource):
 class Productos(Resource):
     
     def get(self):
-        productos = db.session.query(ProductoModel).all()
+        page =1
+        per_page = 2
+        productos = db.session.query(ProductoModel)
+        if request.get_json():
+            filters = request.get_json().items()
+            for i , value in filters:
+                if i =='page':
+                    page = int(value)
+                elif i == 'per_page':
+                    per_page = int(value)
+        productos =productos.paginate(page,per_page,True,3)             
         return jsonify({
-            'productos':[producto.to_json() for producto in productos]
-        })
+            'productos':[producto.to_json() for producto in productos.items],
+            'total':productos.total,
+            'pages':productos.pages,
+            'page':page })
     
     def post(self):
         producto = ProductoModel.from_json(request.get_json())

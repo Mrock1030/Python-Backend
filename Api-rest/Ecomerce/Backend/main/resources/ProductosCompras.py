@@ -4,20 +4,32 @@ from flask import jsonify, request
 from main import db 
 from main.models import ProductoCompraModel
 
-class ProductoCompra(Resource):
+class ProductosCompras(Resource):
     def get (self):
-        productoCompras = db.session.query(ProductoCompraModel).all()
+        page=1
+        per_page=5
+        productocompras = db.session.query(ProductoCompraModel)
+        if request.get_json(silent=True):
+            filters = request.get_json().items()
+            for i , value in filters:
+                if i =='page':
+                    page = int(value)
+                elif i == 'per_page':
+                    per_page = int(value)
+        productoscompras=productocompras.paginate(page,per_page,True,10)             
         return jsonify({
-            "productoCompra":[productoCompra.to_json() for productoCompra in productoCompras ]
-        })
-        
+                'total':productoscompras.total,
+                'pages':prodcutoscompras.pages,
+                'page':page,           
+                'productos':[productoscompras.to_json() for productocompras in productoscompras.items]})
+                  
     def post(self):
         productocompra = ProductoCompraModel.from_json(request.get_json())
         db.session.add(productocompra)
         db.session.commit()
         return productocompra.to_json(), 201
     
-class ProductosCompras(Resource):
+class ProductoCompra(Resource):
     def get(self,id):
         productocompra = db.sesion.query(ProductoCompraModel).get_or_404(id)
         try:
@@ -25,7 +37,7 @@ class ProductosCompras(Resource):
         except:
             return '' , 404
         
-    def delete(self,id).
+    def delete(self,id):
         productocompra = db.session.query(ProductoCompraModel).get_or_404(id)
         try:
             db.session.delete(productocompra)
@@ -37,7 +49,7 @@ class ProductosCompras(Resource):
     def put(self,id):
         productocompra = db.session.query(ProductoCompraModel).get_or_404(id)
         data = request.get_json().items()
-        for i value in data:
+        for i, value in data:
             setattr(productocompra, i ,value)
         try:
             db.session.add(productocompra)

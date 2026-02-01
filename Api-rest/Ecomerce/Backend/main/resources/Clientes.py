@@ -39,13 +39,27 @@ class Cliente(Resource):
 
 class Clientes(Resource):
     
-     def get(self):
-        clientes= db.session.query(UsuarioModel).filter(UsuarioModel.rol=='cliente').all()
+    def get(self):
+        page =1
+        per_page=5 
+        clientes= db.session.query(UsuarioModel).filter(UsuarioModel.rol=='cliente')
+        if request.get_json(silent=True):
+            filters=request.get_json().items()
+            for i, value in filters:
+                if key =='page':
+                    page == int(value)
+                elif key ==' per_page':
+                    per_page=int(value)
+        clientes=clientes.paginate(page,per_page,True,10)
+        
         return jsonify({
-            'usuario':[cliente.to_json() for cliente in clientes]
+            'pages':clientes.pages,
+            'page':page,   
+            'usuario':[cliente.to_json() for cliente in clientes.items],
+            'total':clientes.total
         })
     
-     def post(self):
+    def post(self):
         cliente  = UsuarioModel.from_json(request.get_json())
         cliente. rol='cliente'
         db.session.add(cliente)
