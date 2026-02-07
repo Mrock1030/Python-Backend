@@ -4,7 +4,7 @@ from flask import jsonify, request
 from main import db
 from main.models import UsuarioModel
 from main.help.Helper import Helper as HelperResource
-
+from main.auth.decorators import role_required
 
 
         
@@ -19,7 +19,6 @@ class Cliente(Resource):
         
     def put (self, id):
         cliente = db.session.query(UsuarioModel).get_or_404(id)
-        data = request.get_json().items()
         data = request.get_json(force=True).items()
         for i, value in data:
             setattr(cliente, i, value)
@@ -41,7 +40,7 @@ class Cliente(Resource):
         
 
 class Clientes(Resource):
-    
+    @role_required(roles=['admin'])
     def get(self):
         page =1
         per_page=5 
@@ -63,7 +62,6 @@ class Clientes(Resource):
         })
     
     def post(self):
-        cliente = UsuarioModel.from_json(request.get_json())
         cliente = UsuarioModel.from_json(request.get_json(force=True))
         try:
             HelperResource.validar_sting(cliente.nombre)

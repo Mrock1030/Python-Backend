@@ -18,9 +18,7 @@ def role_required(roles):
 
 @jwt.user_identity_loader
 def user_identity_loader(usuario):
-    return {
-        'usuario.Id':usuario.id,
-        'rol':usuario.rol }
+    return str(usuario.id)
 
 @jwt.additional_claims_loader
 def additional_claims_to_access_token(usuario):
