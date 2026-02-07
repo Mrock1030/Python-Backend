@@ -1,8 +1,7 @@
-from .. import db
 import datetime as dt
 #importamos la libreria de seguridad
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from main import db
 
 
 class Usuario(db.Model):
@@ -14,7 +13,7 @@ class Usuario(db.Model):
     rol=db.Column(db.String(45),nullable=False,default="cliente")
     telefono= db.Column(db.Integer,nullable=False)
     password = db.Column(db.String(100), nullable=False)
-    fecha_registro = db.Column(db.DateTime,default=dt.datetime.now(), nullable=False)
+    fecha_registro = db.Column(db.DateTime,default=dt.datetime.now, nullable=False)
     compras = db.relationship("Compra",back_populates="usuario", cascade="all,delete-orphan")
     
     @property
@@ -33,7 +32,7 @@ class Usuario(db.Model):
         
     
     ##añadimos esta función para debuguiar
-    def __repr___(self):
+    def __repr__(self):
         return f"{self.nombre},{self.apellido},{self.email},{self.rol}"
     
     ##añadimos esto para convertirlo en json 

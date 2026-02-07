@@ -2,11 +2,13 @@ from flask_restful import Resource
 #importamos jsonify para devolver todo en tipo json
 from flask import jsonify, request
 from main import db 
+from main.help.Helper import Helper as HelperResource
 from main.models import ProductoModel
+
 
 class Producto(Resource):
     def get (self,id):
-        producto = db.session.query(ProductoModedl).get_or_404(id)
+        producto = db.session.query(ProductoModel).get_or_404(id)
         try:
             return producto.to_json()
         except:
@@ -14,7 +16,7 @@ class Producto(Resource):
     
     def put (self,id):
         producto = db.session.query(ProductoModel).get_or_404(id)
-        data = request.get_json().items()
+        data = request.get_json(force=True).items()
         for i, value in data:
             setattr(producto,i,value)
             
@@ -40,7 +42,7 @@ class Productos(Resource):
         page =1
         per_page = 2
         productos = db.session.query(ProductoModel)
-        if request.get_json():
+        if request.get_json(silent=True):
             filters = request.get_json().items()
             for i , value in filters:
                 if i =='page':
@@ -55,7 +57,20 @@ class Productos(Resource):
             'page':page })
     
     def post(self):
-        producto = ProductoModel.from_json(request.get_json())
+        producto = ProductoModel.from_json(request.get_json(force=True))
+        try:
+            HelperResource.validar_sting(producto.nombre)
+            HelperResource.validar_sting(producto.descripcion)
+            HelperResource.validar_int(producto.precio)
+            HelperResource.validar_int(producto.stock)
+            if db.session.query(ProductoModel).filter(ProductoModel.nombre == producto.nombre).scalar():
+                raise ValueError('Product already registered', 409)
+        except ValueError as e:
+            return e.args[0], e.args[1]
+            
+            
+            
+            
         db.session.add(producto)
         db.session.commit()
         return producto.to_json(),201

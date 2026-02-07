@@ -4,17 +4,23 @@ from flask import Flask
 import sqlite3
 ##importamos el dotenv para tomar las variables de entorno
 from dotenv import load_dotenv
-
-
-
 ##importamos el modulo para crear la api-rest
 from flask_restful import  Api
 ##Importamos el modulo para conectarme euna base de datos sql
 from flask_sqlalchemy import SQLAlchemy
+#importamos el json webtokenn
+from flask_jwt_extended import JWTManager
+#importamos el archivo de auth
+
+
+
+
 ##definimos lo importado
 api = Api()
 #instanciamos lo anteriormente importado SQLAlchemy
 db=SQLAlchemy()
+
+jwt = JWTManager()
 
 ## para levantar nuetra aplicación
 def create_app():
@@ -51,4 +57,14 @@ def create_app():
     
     api.init_app(app)
     
+    #congigurar jwt
+    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'fallback_secret_key')
+    app.config['JWT_ACCESS_TOKEN_EXPIRE'] = os.getenv('JWT_ACCESS_TOKEN_EXPIRE')
+    
+    #instanciamos la jwt para  que que acorde a la función
+    jwt.init_app (app)
+    from main.auth import routes
+    # Importamos los decoradores para que se registren los callbacks de JWT (identity_loader, etc.)
+    from main.auth import decorators
+    app.register_blueprint(routes.auth)
     return app

@@ -1,4 +1,4 @@
-from .. import db
+from main import db
 
 
 class ProductoCompra(db.Model):
@@ -25,7 +25,7 @@ class ProductoCompra(db.Model):
         productoId = productocompra_json.get("productoId")
         compraId = productocompra_json.get("compraId")
         
-        return ProdutoCompra (
+        return ProductoCompra (
             productoId=productoId,
             compraId=compraId)
         

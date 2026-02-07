@@ -3,6 +3,7 @@ from flask_restful import Resource
 from flask import jsonify, request
 from main import db 
 from main.models import CompraModel
+from main.help.Helper import Helper as HelperResource
 
 class Compra(Resource):
     
@@ -16,7 +17,7 @@ class Compra(Resource):
         
     def put (self,id):
         Compra = db.session.query(CompraModel).get_or_404(id)
-        data = request.get_json().items()
+        data = request.get_json(force=True).items()
         for i , value in data:
             setattr(Compra,i,value)
         try:
@@ -56,7 +57,12 @@ class Compras(Resource):
             'page':page})
     
     def post(self):
-        compra = CompraModel.from_json(request.get_json())
+        compra = CompraModel.from_json(request.get_json(force=True))
+        try:
+            HelperResource.validar_int(compra.usuarioId)        
+        except ValueError as e:
+            return e.args[0], e.args[1]
+        
         db.session.add(compra)
         db.session.commit()
         return compra.to_json(),201    

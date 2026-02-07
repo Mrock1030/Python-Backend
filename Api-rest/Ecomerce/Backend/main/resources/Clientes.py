@@ -3,6 +3,7 @@ from flask_restful import Resource
 from flask import jsonify, request
 from main import db
 from main.models import UsuarioModel
+from main.help.Helper import Helper as HelperResource
 
 
 
@@ -11,6 +12,7 @@ class Cliente(Resource):
     def get (self,id):
         cliente=db.session.query(UsuarioModel).get_or_404(id)
         if cliente.rol=='cliente':
+            
             return cliente.to_json()
         else:
             return '',404
@@ -18,6 +20,7 @@ class Cliente(Resource):
     def put (self, id):
         cliente = db.session.query(UsuarioModel).get_or_404(id)
         data = request.get_json().items()
+        data = request.get_json(force=True).items()
         for i, value in data:
             setattr(cliente, i, value)
         try:
@@ -46,9 +49,9 @@ class Clientes(Resource):
         if request.get_json(silent=True):
             filters=request.get_json().items()
             for i, value in filters:
-                if key =='page':
-                    page == int(value)
-                elif key ==' per_page':
+                if i =='page':
+                    page = int(value)
+                elif i =='per_page':
                     per_page=int(value)
         clientes=clientes.paginate(page,per_page,True,10)
         
@@ -60,8 +63,24 @@ class Clientes(Resource):
         })
     
     def post(self):
-        cliente  = UsuarioModel.from_json(request.get_json())
-        cliente. rol='cliente'
+        cliente = UsuarioModel.from_json(request.get_json())
+        cliente = UsuarioModel.from_json(request.get_json(force=True))
+        try:
+            HelperResource.validar_sting(cliente.nombre)
+            HelperResource.validar_sting(cliente.apellido)
+            HelperResource.validar_int(cliente.telefono)
+            HelperResource.how_many_number(cliente.telefono)
+            
+            if db.session.query(UsuarioModel).filter(UsuarioModel.email == cliente.email).scalar():
+                raise ValueError('Email already registered', 409)
+            elif db.session.query(UsuarioModel).filter(UsuarioModel.nombre == cliente.nombre, UsuarioModel.apellido == cliente.apellido).scalar() :
+                 raise ValueError('User already registered', 409)
+
+        except ValueError as e:
+            return e.args[0], e.args[1]
+
+      
+        cliente.rol='cliente'
         db.session.add(cliente)
         db.session.commit()
         return cliente.to_json(),201

@@ -3,6 +3,8 @@ from flask_restful import Resource
 from flask import jsonify, request
 from main import db
 from main.models import UsuarioModel
+from main.help.Helper import Helper as HelperResource
+
 
 class Usuario(Resource):
     def get (self,id):

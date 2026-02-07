@@ -19,19 +19,19 @@ class ProductosCompras(Resource):
         productoscompras=productocompras.paginate(page,per_page,True,10)             
         return jsonify({
                 'total':productoscompras.total,
-                'pages':prodcutoscompras.pages,
+                'pages':productoscompras.pages,
                 'page':page,           
                 'productos':[productoscompras.to_json() for productocompras in productoscompras.items]})
                   
     def post(self):
-        productocompra = ProductoCompraModel.from_json(request.get_json())
+        productocompra = ProductoCompraModel.from_json(request.get_json(force=True))
         db.session.add(productocompra)
         db.session.commit()
         return productocompra.to_json(), 201
     
 class ProductoCompra(Resource):
     def get(self,id):
-        productocompra = db.sesion.query(ProductoCompraModel).get_or_404(id)
+        productocompra = db.session.query(ProductoCompraModel).get_or_404(id)
         try:
             return  productocompra.to_json()
         except:
@@ -48,7 +48,7 @@ class ProductoCompra(Resource):
         
     def put(self,id):
         productocompra = db.session.query(ProductoCompraModel).get_or_404(id)
-        data = request.get_json().items()
+        data = request.get_json(force=True).items()
         for i, value in data:
             setattr(productocompra, i ,value)
         try:

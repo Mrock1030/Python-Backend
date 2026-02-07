@@ -1,6 +1,5 @@
-from .. import db
 import datetime as dt
-
+from main import db
 
 class Producto(db.Model):
 
@@ -13,7 +12,7 @@ class Producto(db.Model):
     stock = db.Column(db.Integer,nullable=False)
      
     def __repr__(self):
-        return f'{self.nombre},{self.precio},{self.descripcio},{self.stock}'
+        return f'{self.nombre},{self.precio},{self.descripcion},{self.stock}'
 
 
     ##añadimos esto para convertirlo en json 
