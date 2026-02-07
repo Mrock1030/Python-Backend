@@ -13,10 +13,7 @@ def login():
         access_token = create_access_token(identity=usuario)
         
         data = {
-            'id':str(usuario.id),
-            'email': usuario.email,
             'access_token':access_token,
-            'rol':str(usuario.rol)   
         }
         return data, 200
     else:
