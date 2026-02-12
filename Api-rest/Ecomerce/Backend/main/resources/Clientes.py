@@ -5,15 +5,22 @@ from main import db
 from main.models import UsuarioModel
 from main.help.Helper import Helper as HelperResource
 from main.auth.decorators import role_required
+from flask_jwt_extended import get_jwt
 
 
         
 class Cliente(Resource):
+    @role_required(roles=['admin','cliente'])
     def get (self,id):
-        cliente=db.session.query(UsuarioModel).get_or_404(id)
-        if cliente.rol=='cliente':
-            
-            return cliente.to_json()
+git         claims = get_jwt()
+        cliente = db.session.query(UsuarioModel).filter(UsuarioModel.id == id).first()
+        if cliente is None:
+            return 'Cliente no existe', 404
+        elif cliente.rol=='cliente':
+            if claims['id'] == cliente.id or claims['rol'] == 'admin':
+                return cliente.to_json()
+            else:
+                return 'Unauthorized',401
         else:
             return '',404
         

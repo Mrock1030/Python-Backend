@@ -23,7 +23,8 @@ def user_identity_loader(usuario):
 @jwt.additional_claims_loader
 def additional_claims_to_access_token(usuario):
     claims ={
-        'id':usuario.id}
+        'id':usuario.id,
+        'rol':usuario.rol}
     return claims
     
 

@@ -16,10 +16,10 @@ class Compra(Resource):
             return '',404
         
     def put (self,id):
-        Compra = db.session.query(CompraModel).get_or_404(id)
+        compra = db.session.query(CompraModel).get_or_404(id)
         data = request.get_json(force=True).items()
         for i , value in data:
-            setattr(Compra,i,value)
+            setattr(compra,i,value)
         try:
             db.session.add(compra)
             db.session.commit()

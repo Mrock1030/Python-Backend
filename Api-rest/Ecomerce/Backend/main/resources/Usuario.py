@@ -8,9 +8,9 @@ from main.help.Helper import Helper as HelperResource
 
 class Usuario(Resource):
     def get (self,id):
-        Usuario=db.session.query(UsuarioModel).get_or_404(id)
-        if cliente.rol=='cliente':
-            return cliente.to_json()
+        usuario = db.session.query(UsuarioModel).get_or_404(id)
+        if usuario.rol == 'cliente':
+            return usuario.to_json()
         else:
             return '',404
         
