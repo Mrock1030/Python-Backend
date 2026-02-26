@@ -12,17 +12,24 @@ from flask_jwt_extended import get_jwt
 class Cliente(Resource):
     @role_required(roles=['admin','cliente'])
     def get (self,id):
-git         claims = get_jwt()
+        # Obtenemos los datos del usuario que hace la petición (del token)
+        claims = get_jwt()
+        # Buscamos al usuario objetivo en la base de datos por su ID
         cliente = db.session.query(UsuarioModel).filter(UsuarioModel.id == id).first()
+        
+        # Si no existe el usuario, devolvemos 404
         if cliente is None:
             return 'Cliente no existe', 404
-        elif cliente.rol=='cliente':
-            if claims['id'] == cliente.id or claims['rol'] == 'admin':
-                return cliente.to_json()
-            else:
-                return 'Unauthorized',401
+        # Verificamos que el usuario buscado sea efectivamente un 'cliente'
+        elif cliente.rol=='cliente' and claims['id'] == cliente.id:
+            # Solo permitimos ver los datos si el usuario se busca a sí mismo O si quien busca es admin
+           return cliente.to_json()
+
+        elif claims['id']==cliente.id  and  cliente.rol=='admin':
+            return cliente.to_json()
         else:
-            return '',404
+            # Si el usuario existe pero no es 'cliente' ni'admin' devolvemos 404 para ocultarlo
+            return 'No tienes permisos para acceder a este recurso',404
         
     def put (self, id):
         cliente = db.session.query(UsuarioModel).get_or_404(id)
@@ -36,16 +43,32 @@ git         claims = get_jwt()
         except:
             return '' ,404
         
+    @role_required(roles=['admin','cliente'])
     def delete(self,id):
+        claims = get_jwt()
         cliente = db.session.query(UsuarioModel).get_or_404(id)
-        try:
-            db.session.delete(cliente)
-            db.session.commit()
-            return 'Se elimino el cliente', 201
-        except :
-            return 'No existe el cliente a elminar', 404
         
-
+        if cliente is None:
+            return 'El cliente no existe o ya fue eliminado', 404
+        
+        elif cliente.rol=='cliente' and claims['id'] == cliente.id:
+                try:
+                    db.session.delete(cliente)
+                    db.session.commit()
+                    return 'Se elimino el cliente', 201
+                except:
+                    return 'No se pudo eliminar el cliente', 404
+                
+        elif claims['id']==cliente.id  and  cliente.rol=='admin':
+                try:
+                    db.session.delete(cliente)
+                    db.session.commit()
+                    return 'Se elimino el cliente', 201
+                except:
+                    return 'No se pudo eliminar el cliente', 404
+        else:
+            return '',404
+            
 class Clientes(Resource):
     @role_required(roles=['admin'])
     def get(self):
@@ -68,6 +91,7 @@ class Clientes(Resource):
             'total':clientes.total
         })
     
+    @role_required(roles=['admin'])
     def post(self):
         cliente = UsuarioModel.from_json(request.get_json(force=True))
         try:

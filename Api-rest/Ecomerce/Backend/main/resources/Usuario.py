@@ -4,6 +4,8 @@ from flask import jsonify, request
 from main import db
 from main.models import UsuarioModel
 from main.help.Helper import Helper as HelperResource
+from main.auth.decorators import role_required
+from flask_jwt_extended import get_jwt
 
 
 class Usuario(Resource):

@@ -28,6 +28,8 @@ def register():
         return 'Duplicated email', 409
     else:
         try:
+            # Asignamos el rol de cliente por defecto en el registro público
+            usuario.rol = 'cliente'
             db.session.add(usuario)
             db.session.commit()
         except Exception as error :
