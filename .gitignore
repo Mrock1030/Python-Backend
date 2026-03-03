@@ -2,6 +2,8 @@
 **/.pytest_cache/
 **/query/*
 *.env
+*.db
+*.sqbpro
 
 
 # Ignorar archivos de caché de Python
