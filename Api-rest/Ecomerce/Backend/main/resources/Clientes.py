@@ -1,11 +1,12 @@
 from flask_restful import Resource
 #importamos jsonify para devolver todo en tipo json
 from flask import jsonify, request
-from main import db
+from main import db, mailsender
 from main.models import UsuarioModel
 from main.help.Helper import Helper as HelperResource
 from main.auth.decorators import role_required
 from flask_jwt_extended import get_jwt
+from flask_mail import Message
 
 
         
@@ -90,7 +91,7 @@ class Clientes(Resource):
             'usuario':[cliente.to_json() for cliente in clientes.items],
             'total':clientes.total
         })
-    
+        
     @role_required(roles=['admin'])
     def post(self):
         cliente = UsuarioModel.from_json(request.get_json(force=True))
@@ -107,8 +108,6 @@ class Clientes(Resource):
 
         except ValueError as e:
             return e.args[0], e.args[1]
-
-      
         cliente.rol='cliente'
         db.session.add(cliente)
         db.session.commit()

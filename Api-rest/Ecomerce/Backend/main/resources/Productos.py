@@ -68,9 +68,7 @@ class Productos(Resource):
         except ValueError as e:
             return e.args[0], e.args[1]
             
-            
-            
-            
+           
         db.session.add(producto)
         db.session.commit()
         return producto.to_json(),201

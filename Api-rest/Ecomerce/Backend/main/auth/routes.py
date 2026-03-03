@@ -2,6 +2,9 @@ from flask import request, Blueprint
 from main.models import UsuarioModel
 from flask_jwt_extended import create_access_token
 from main import db
+from main.mail import functions
+
+
 
 
 auth = Blueprint('auth',__name__,url_prefix='/auth')
@@ -32,6 +35,8 @@ def register():
             usuario.rol = 'cliente'
             db.session.add(usuario)
             db.session.commit()
+            functions.send_email([usuario.email],'Bienvenido Backend ejercicio','register',usuario=usuario)
+            print('aqui se ejecuto2')
         except Exception as error :
             db.session.rollback()
             return  str(error), 409

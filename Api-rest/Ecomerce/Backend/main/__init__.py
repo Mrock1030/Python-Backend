@@ -10,7 +10,8 @@ from flask_restful import  Api
 from flask_sqlalchemy import SQLAlchemy
 #importamos el json webtokenn
 from flask_jwt_extended import JWTManager
-#importamos el archivo de auth
+#importo el modulo para  trabajar con email.
+from flask_mail import Mail
 
 
 
@@ -19,8 +20,11 @@ from flask_jwt_extended import JWTManager
 api = Api()
 #instanciamos lo anteriormente importado SQLAlchemy
 db=SQLAlchemy()
-
 jwt = JWTManager()
+#instanciamos mail sender
+mailsender= Mail()
+
+
 
 ## para levantar nuetra aplicación
 def create_app():
@@ -67,4 +71,19 @@ def create_app():
     # Importamos los decoradores para que se registren los callbacks de JWT (identity_loader, etc.)
     from main.auth import decorators
     app.register_blueprint(routes.auth)
+    from main.mail import functions
+    app.register_blueprint(functions.mail)
+    
+    #configurar mail
+    app.config['MAIL_HOSTNAME'] = os.getenv('MAIL_HOSTNAME')
+    app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+    app.config['MAIL_PORT'] = os.getenv('MAIL_PORT')
+    app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') 
+    app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+    app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
+    
+    mailsender.init_app(app)
+    
+
     return app
