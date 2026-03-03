@@ -1,7 +1,7 @@
 # Ignorar cachés de pytest
 **/.pytest_cache/
 **/query/*
-.env
+*.env
 
 
 # Ignorar archivos de caché de Python
