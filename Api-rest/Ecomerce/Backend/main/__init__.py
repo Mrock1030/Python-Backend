@@ -13,9 +13,6 @@ from flask_jwt_extended import JWTManager
 #importo el modulo para  trabajar con email.
 from flask_mail import Mail
 
-
-
-
 ##definimos lo importado
 api = Api()
 #instanciamos lo anteriormente importado SQLAlchemy
@@ -47,6 +44,10 @@ def create_app():
     
     #definimos la ruta
     import main.resources as resources
+    
+    ##agregamos los nuevos cambios
+    import main.controllers as controllers
+    
     ##agregamos la url que va tener para ser obtenido
     api.add_resource(resources.ClientesResource, '/clientes')
     api.add_resource(resources.ClienteResource,'/cliente/<int:id>')
@@ -58,6 +59,10 @@ def create_app():
     api.add_resource(resources.CompraResource,'/compra/<id>')
     api.add_resource(resources.ProductosComprasResource,'/productos/compras')
     api.add_resource(resources.ProductoCompraResource,'/producto/compra/<id>')
+    
+    #nuevos endpoint
+    api.add_resource(controllers.CompraController,'/compra-controller/<id>')
+    api.add_resource(controllers.ComprasController,'/compra-controller')
     
     api.init_app(app)
     

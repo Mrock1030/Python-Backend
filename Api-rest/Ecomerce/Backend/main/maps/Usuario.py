@@ -1,9 +1,9 @@
 from marshmallow import Schema, fields, post_load, post_dump
 from main.models import UsuarioModel
 
-class UsuarioSchemas(Schema):
+class UsuarioSchema(Schema):
     id = fields.Int(dump_only=True)
-    nombre = fields.Stringing(required=True)
+    nombre = fields.String(required=True)
     apellido = fields.String(required=True)
     email = fields.String(required=True)
     password = fields.String(required=True, load_only=True)
@@ -23,8 +23,3 @@ class UsuarioSchemas(Schema):
         return {
             key: value for key, value in data.items() if value not in self.SKIP_VALUES
         }
-
-
-
-
-

@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from main.maps import CompraSchema
-from main.services import CompraService
+from main.services.Compra import CompraService
 from flask import request
 
 
@@ -16,6 +16,5 @@ class CompraController(Resource):
     
 class ComprasController(Resource):
     def post(self):
-        compra = compra_schema.load(request.get_json)
+        compra = compra_schema.load(request.get_json())
         return compra_schema.dump(compra_services.agregar_compra(compra), many=False)
-

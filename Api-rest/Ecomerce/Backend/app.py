@@ -1,7 +1,4 @@
 #importamos de main la función create_app
-import sys
-print("Ejecutando con Python en:", sys.executable)
-print("Buscando librerias en:", sys.path)
 from main import create_app,db
 import os
 
