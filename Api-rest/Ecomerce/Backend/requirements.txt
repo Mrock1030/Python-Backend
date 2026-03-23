@@ -5,4 +5,5 @@ flask-sqlalchemy==2.5.1
 flask-jwt-extended
 flask-mail
 sqlalchemy==1.4.23
+marshmallow 
 

@@ -1,0 +1,24 @@
+from marshmallow import Schema, fields, post_load, post_dump
+from main.models import CompraModel
+from .Usuario import UsuarioSchemas
+
+class CompraSchema(Schema):
+    id = fields.Int(dump_only=True)
+    fecha_compra = fields.DateTime(required=False)
+    usuarioId=fields.Integer(required=True)
+    usuario= fields.Nested(UsuarioSchemas)
+
+@post_load
+def create_compra(self, data, **kwargs):
+    return CompraModel(**data)
+
+SKIP_VALUES =["usuarioId"]
+
+@post_dump  
+def remove_skip_values(self, data, **kwargs):
+    return {
+        key: value for key, value in data.items() if value not in self.SKIP_VALUES
+    }   
+
+    
+    

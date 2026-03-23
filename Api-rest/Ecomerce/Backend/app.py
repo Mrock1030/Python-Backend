@@ -1,9 +1,9 @@
 #importamos de main la función create_app
+import sys
+print("Ejecutando con Python en:", sys.executable)
+print("Buscando librerias en:", sys.path)
 from main import create_app,db
 import os
-
-# Importamos los modelos para que SQLAlchemy los reconozca antes de inicializar la DB
-from main.models import ProductoModel, UsuarioModel, ProductoCompraModel, CompraModel
 
 #llamamos nuevamnete a la aplicación app
 app = create_app()

@@ -33,8 +33,8 @@ def create_app():
     #cargamos las variables de entorno
     load_dotenv()
     #configuración de la base de datos.db
-    PATH = os.getenv("DATABASE_PATH")
-    DB_NAME = os.getenv("DATABASE_NAME")
+    PATH = os.getenv("DATABASE_PATH", ".")
+    DB_NAME = os.getenv("DATABASE_NAME", "db.sqlite")
     #comprobamos si existe la base de datos
     if not os.path.exists(os.path.join(PATH,DB_NAME)):
         os.makedirs(PATH, exist_ok=True)
