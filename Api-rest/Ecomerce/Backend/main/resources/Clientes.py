@@ -7,6 +7,8 @@ from main.help.Helper import Helper as HelperResource
 from main.auth.decorators import role_required
 from flask_jwt_extended import get_jwt
 from flask_mail import Message
+from flask import jsonify, request, current_app
+from sqlalchemy.exc import SQLAlchemyError
 
 
         
@@ -31,19 +33,40 @@ class Cliente(Resource):
         else:
             # Si el usuario existe pero no es 'cliente' ni'admin' devolvemos 404 para ocultarlo
             return 'No tienes permisos para acceder a este recurso',404
-        
+   
+    CAMPOS_PERMITIDOS = {"nombre", "apellido", "telefono"}
+
+    @role_required(roles=['admin','cliente'])    
     def put (self, id):
-        cliente = db.session.query(UsuarioModel).get_or_404(id)
-        data = request.get_json(force=True).items()
-        for i, value in data:
-            setattr(cliente, i, value)
-        try:
-            db.session.add(cliente)
-            db.session.commit()
-            return cliente.to_json(),201
-        except:
-            return '' ,404
+        claims = get_jwt()
+        es_admin = claims.get("rol") =="admin"
+        es_dueno = int(claims.get("id",-1)) ==id
+
+        cliente = db.session.get(UsuarioModel).get_or_404(id)
+        if cliente is None
+            return {"error:Cliente no encontrado"},404
         
+        data = request.get_json(silent=True)
+        if not isintance (data,dict):
+            return {"error": "Debes enviar un objeto JSON"}, 400
+        campos_invalidos = set(data)-CAMPOS_PERMITIDOS
+        if campos_invalidos :
+            return {
+            "error": "Campos no permitidos",
+            "campos": sorted(campos_invalidos), }, 422
+
+        for campo, valor, in data.items():
+            setattr (cliente,campo,valor):
+        try:
+            db.session.commit()
+        except SQLAlchemyError:
+            db.session.rollback()
+            current_app.logger.exception("Error actualizando cliente")
+            return {"error": "No se pudo actualizar el cliente"}, 500
+
+        return cliente.to_json(), 200
+    
+
     @role_required(roles=['admin','cliente'])
     def delete(self,id):
         claims = get_jwt()
